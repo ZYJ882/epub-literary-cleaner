@@ -5,14 +5,18 @@ on:
   pull_request:
 
 jobs:
-  python-check:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
+      - name: Install XML dependency
+        run: python -m pip install lxml pyyaml
       - name: Compile scripts
         run: python -m py_compile scripts/*.py
+      - name: Run regression tests
+        run: python tests/test_tools.py
       - name: Check required files
-        run: test -f SKILL.md && test -f README.md && test -f LICENSE
+        run: test -f SKILL.md && test -f README.md && test -f LICENSE && test -f skill.json

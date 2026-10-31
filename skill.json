@@ -1,12 +1,13 @@
 {
   "name": "epub-literary-cleaner",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "type": "manus-skill",
   "entrypoint": "SKILL.md",
   "description": "整理、修复、审查中文文学 EPUB，并从 EPUB 提取干净 UTF-8 TXT。",
   "license": "MIT",
   "scripts": {
     "audit": "scripts/audit_epub.py",
-    "extract_txt": "scripts/epub_to_clean_txt.py"
+    "extract_txt": "scripts/epub_to_clean_txt.py",
+    "cli": "scripts/epub_cleaner.py"
   }
 }

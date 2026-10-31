@@ -6,7 +6,7 @@
 
 这个 Skill 面向中文小说、文学合订本和长篇 EPUB 的整理工作。它把“结构审查”和“正文清理”分开处理：先根据 EPUB 的 `OPF`、`spine`、`NCX/nav` 检查卷章顺序，再根据证据处理乱码目录、制作错误造成的重复、缺失章节和章节衔接异常。
 
-**当前版本：`1.1.0`**（遵循 [Semantic Versioning](https://semver.org/)）。版本号同时写在 `SKILL.md` 的 YAML frontmatter 和 [`skill.json`](skill.json) 中，方便 Manus 及其他工具识别。
+**当前版本：`1.2.0`**（遵循 [Semantic Versioning](https://semver.org/)）。版本号同时写在 `SKILL.md` 的 `metadata.version` 和 [`skill.json`](skill.json) 中，方便 Manus 及其他工具识别。
 
 适合以下任务：
 
@@ -31,7 +31,7 @@
 
 ## 直接生成干净 TXT
 
-脚本以 EPUB 为唯一来源，按 EPUB 原始 NCX/nav 层级提取正文，不按乱码文件名或文件系统顺序排序：
+脚本以 EPUB 为唯一来源，优先读取 EPUB 3 `nav.xhtml`，否则读取 EPUB 2 NCX，按原始多级目录提取正文，不按乱码文件名或文件系统顺序排序：
 
 ```bash
 python3 scripts/epub_to_clean_txt.py input.epub output.txt
@@ -54,6 +54,17 @@ python3 scripts/audit_epub.py input.epub
 
 审查时应先看报告，再决定是否修改。脚本和 Skill 不会仅凭相似度自动删除疑似作者重复；回环叙事、倒叙、时间冻结和首尾照应必须结合上下文或可靠公开版本判断。
 
+也可以使用统一命令行入口：
+
+```bash
+python3 scripts/epub_cleaner.py audit book.epub --report audit.json
+python3 scripts/epub_cleaner.py extract book.epub clean.txt --report extract.json
+```
+
+`audit` 是只读检查，不修改原文件；高风险正文修复仍由 Agent 根据证据执行，避免自动算法误删作者原文。
+
+本项目刻意不提供“无确认自动删除正文”的 `repair` 子命令。修复 EPUB 时应以原版为骨架，记录证据后定向修改；程序负责审查、提取和验证，Agent 或用户负责确认哪些疑似重复确实属于制作错误。
+
 ## 目录结构
 
 ```text
@@ -61,6 +72,8 @@ SKILL.md                         # Manus Skill 主说明
 skill.json                       # 机器可读的名称、版本和入口清单
 scripts/audit_epub.py            # EPUB 结构与重复审查
 scripts/epub_to_clean_txt.py     # 按 EPUB 目录提取干净 TXT
+scripts/epub_cleaner.py          # 统一 audit/extract 命令行入口
+tests/test_tools.py              # EPUB 2/3 和多级目录回归测试
 LICENSE                          # MIT License
 ```
 
@@ -68,6 +81,7 @@ LICENSE                          # MIT License
 
 ```bash
 python3 -m py_compile scripts/*.py
+python3 tests/test_tools.py
 python3 scripts/epub_to_clean_txt.py book.epub clean.txt
 ```
 
@@ -81,7 +95,7 @@ TXT 没有 EPUB 的 NCX/nav、父子目录和跳转链接，因此 TXT 中的分
 
 ## 版本与发布
 
-版本遵循 SemVer：
+版本遵循 SemVer，当前为 `1.2.0`：
 
 - `MAJOR`：不兼容的 Skill 入口或行为变化；
 - `MINOR`：向后兼容的新功能或新脚本；

@@ -1,7 +1,7 @@
 ---
 name: epub-literary-cleaner
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 description: Clean, repair, audit Chinese literary EPUB books, and extract clean UTF-8 TXT from the EPUB while preserving valid cover, images, CSS, original volume hierarchy, and chapter order. Use for整理、修复、审查 EPUB/TXT, removing乱码目录、错误重复、缺失章节、章节错位或前后文不连贯，以及“根据 EPUB 做干净 TXT”。
 ---
 
@@ -20,8 +20,9 @@ description: Clean, repair, audit Chinese literary EPUB books, and extract clean
 5. **网络交叉核对。** 对异常章节查询至少一个可靠公开目录或正文版本，优先出版社/正版阅读平台，其次多个公开目录交叉比对。网络结果只用于确认章节名称、顺序、缺失和重复性质；不要用网络文本无依据地替换大量用户未提供的正文。补回缺失章节时记录来源、章节号、插入位置和原因。
 6. **谨慎修复正文。** 删除明确的乱码目录项、重复制作页和确认属于转换错误的重复正文；补回有可靠来源且确实缺失的章节；修正章节标题、卷名和顺序。不要擅自润色、改写语句或纠正作者文学表达。对无法确认的疑点保留原文并在报告中说明。
 7. **重建 EPUB 时以原版为骨架。** 若用户喜欢原版目录，复制原版 EPUB 后只做定向正文修改；不要从 TXT 反向重建 EPUB，不要重命名全部文件，不要删除未确认的 spine/manifest 项。保留正常图片、封面、字体、CSS、guide、原始 NCX/nav 和元数据。只有明确的乱码目录项才清理。确保 `mimetype` 首位且不压缩，运行 `unzip -t`。
-8. **从 EPUB 生成 TXT。** 必须以最终 EPUB 为唯一来源，而不是从中间 JSON、旧 TXT 或原始网页拼接。优先使用 `scripts/epub_to_clean_txt.py`：按 NCX 的原始父子层级和正文顺序输出卷名、章节标题和正文；跳过封面、制作说明、内容介绍、角色图鉴、图片页和空白页；去掉 HTML/XML、CSS、网页按钮、评论区和图片占位符；去掉 XHTML 转换造成的重复章节标题；保留章节正文措辞和正常段落换行。不要按文件名排序，不要把卷标题做成额外正文页。
-9. **最终验证。** 检查 EPUB 能解压，NCX/nav 层级和链接目标存在，原版图片路径和数量未减少，TXT 无 HTML/XML 残留、无明显站点导航、无替换字符和图片占位符；检查 TXT 包含所有卷标题、补回章节和末尾读者信（如原 EPUB 有）。
+8. **从 EPUB 生成 TXT。** 必须以最终 EPUB 为唯一来源，而不是从中间 JSON、旧 TXT 或原始网页拼接。优先使用 `scripts/epub_to_clean_txt.py`：优先读取 EPUB 3 `nav.xhtml`，否则读取 EPUB 2 NCX，按原始父子层级和正文顺序输出卷名、章节标题和正文；跳过封面、制作说明、内容介绍、角色图鉴、图片页和空白页；去掉 HTML/XML、CSS、网页按钮、评论区和图片占位符；去掉 XHTML 转换造成的重复章节标题；保留章节正文措辞和正常段落换行。不要按文件名排序，不要把卷标题做成额外正文页。
+9. **统一 CLI 与报告。** 只读审查使用 `scripts/epub_cleaner.py audit`，提取使用 `scripts/epub_cleaner.py extract`。修复动作仍由 Agent 根据证据执行，不要把高风险正文删除自动化。审查结果写入 JSON，记录错误、警告、资源统计、导航候选、spine 和疑似重复。
+10. **最终验证。** 检查 EPUB 能解压，ZIP 路径安全，mimetype 正确且首位不压缩，NCX/nav 层级和链接目标存在，原版图片路径和数量未减少，TXT 无 HTML/XML 残留、无明显站点导航、无替换字符和图片占位符；检查 TXT 包含所有卷标题、补回章节和末尾读者信（如原 EPUB 有）。
 
 ## 从 EPUB 输出干净 TXT
 
@@ -81,5 +82,6 @@ python3 /home/ubuntu/skills/epub-literary-cleaner/scripts/epub_to_clean_txt.py \
 
 - `scripts/audit_epub.py`：生成 EPUB 结构和重复审查报告；
 - `scripts/epub_to_clean_txt.py`：按 EPUB 原始 NCX/nav 层级提取干净 UTF-8 TXT。
+- `scripts/epub_cleaner.py`：统一的 `audit` / `extract` 命令行入口。
 
-不要把特定书名、章节或绝对路径写死在 Skill 中。
+不要把特定书名、章节或绝对路径写死在 Skill 中。版本号位于 frontmatter 的 `metadata.version`，并与 `skill.json` 保持一致。

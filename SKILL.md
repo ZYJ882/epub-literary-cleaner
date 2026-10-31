@@ -1,5 +1,7 @@
 ---
 name: epub-literary-cleaner
+metadata:
+  version: 1.1.0
 description: Clean, repair, audit Chinese literary EPUB books, and extract clean UTF-8 TXT from the EPUB while preserving valid cover, images, CSS, original volume hierarchy, and chapter order. Use for整理、修复、审查 EPUB/TXT, removing乱码目录、错误重复、缺失章节、章节错位或前后文不连贯，以及“根据 EPUB 做干净 TXT”。
 ---
 

@@ -6,6 +6,8 @@
 
 这个 Skill 面向中文小说、文学合订本和长篇 EPUB 的整理工作。它把“结构审查”和“正文清理”分开处理：先根据 EPUB 的 `OPF`、`spine`、`NCX/nav` 检查卷章顺序，再根据证据处理乱码目录、制作错误造成的重复、缺失章节和章节衔接异常。
 
+**当前版本：`1.1.0`**（遵循 [Semantic Versioning](https://semver.org/)）。版本号同时写在 `SKILL.md` 的 YAML frontmatter 和 [`skill.json`](skill.json) 中，方便 Manus 及其他工具识别。
+
 适合以下任务：
 
 - 保留原版封面、插图、CSS、字体、元数据和分级目录的 EPUB 修复；
@@ -56,6 +58,7 @@ python3 scripts/audit_epub.py input.epub
 
 ```text
 SKILL.md                         # Manus Skill 主说明
+skill.json                       # 机器可读的名称、版本和入口清单
 scripts/audit_epub.py            # EPUB 结构与重复审查
 scripts/epub_to_clean_txt.py     # 按 EPUB 目录提取干净 TXT
 LICENSE                          # MIT License
@@ -77,5 +80,11 @@ TXT 没有 EPUB 的 NCX/nav、父子目录和跳转链接，因此 TXT 中的分
 本项目采用 MIT License。使用本 Skill 整理电子书时，请确保拥有相应文件的合法使用权，并遵守适用的版权和平台规则。
 
 ## 版本与发布
+
+版本遵循 SemVer：
+
+- `MAJOR`：不兼容的 Skill 入口或行为变化；
+- `MINOR`：向后兼容的新功能或新脚本；
+- `PATCH`：向后兼容的问题修复和文档修正。
 
 详细版本变化、升级说明和兼容性信息放在 GitHub [Releases](https://github.com/ZYJ882/epub-literary-cleaner/releases) 中；README 只保留项目用途和使用方法，避免与 Release 历史重复。
